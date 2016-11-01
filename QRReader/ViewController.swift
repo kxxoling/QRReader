@@ -24,7 +24,7 @@ class ViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
 
         // Get an instance of the AVCaptureDevice class to initialize a device object and provide the video
         // as the media type parameter.
-        let captureDevice = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
+        let captureDevice = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
 
         do {
             // Get an instance of the AVCaptureDeviceInput class using the previous device object.
@@ -40,7 +40,7 @@ class ViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
             captureSession?.addOutput(captureMetadataOutput)
 
             // Set delegate and use the default dispatch queue to execute the call back
-            captureMetadataOutput.setMetadataObjectsDelegate(self, queue: dispatch_get_main_queue())
+            captureMetadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
 
             // Detect all the supported bar code
             captureMetadataOutput.metadataObjectTypes = supportedBarCodes
@@ -55,16 +55,16 @@ class ViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
             captureSession?.startRunning()
 
             // Move the message label to the top view
-            view.bringSubviewToFront(messageLabel)
+            view.bringSubview(toFront: messageLabel)
 
             // Initialize QR Code Frame to highlight the QR code
             qrCodeFrameView = UIView()
 
             if let qrCodeFrameView = qrCodeFrameView {
-                qrCodeFrameView.layer.borderColor = UIColor.greenColor().CGColor
+                qrCodeFrameView.layer.borderColor = UIColor.green.cgColor
                 qrCodeFrameView.layer.borderWidth = 2
                 view.addSubview(qrCodeFrameView)
-                view.bringSubviewToFront(qrCodeFrameView)
+                view.bringSubview(toFront: qrCodeFrameView)
             }
         } catch {
             // If any error occurs, simply print it out and don't continue any more.
@@ -78,11 +78,11 @@ class ViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
         // Dispose of any resources that can be recreated.
     }
 
-    func captureOutput(captureOutput: AVCaptureOutput!, didOutputMetadataObjects metadataObjects: [AnyObject]!, fromConnection connection: AVCaptureConnection!) {
+    func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputMetadataObjects metadataObjects: [Any]!, from connection: AVCaptureConnection!) {
 
         // Check if the metadataObjects array is not nil and it contains at least one object.
         if metadataObjects == nil || metadataObjects.count == 0 {
-            qrCodeFrameView?.frame = CGRectZero
+            qrCodeFrameView?.frame = CGRect.zero
             messageLabel.text = "No barcode/QR code is detected"
             return
         }
@@ -96,7 +96,7 @@ class ViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
         if supportedBarCodes.contains(metadataObj.type) {
 //        if metadataObj.type == AVMetadataObjectTypeQRCode {
             // If the found metadata is equal to the QR code metadata then update the status label's text and set the bounds
-            let barCodeObject = videoPreviewLayer?.transformedMetadataObjectForMetadataObject(metadataObj)
+            let barCodeObject = videoPreviewLayer?.transformedMetadataObject(for: metadataObj)
             qrCodeFrameView?.frame = barCodeObject!.bounds
 
             if metadataObj.stringValue != nil {
@@ -104,15 +104,15 @@ class ViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
                 currentQrString = metadataObj.stringValue
 
                 if lastQrString != currentQrString {
-                    let actionAlert = UIAlertController(title: "Copy to clipboard?", message: currentQrString, preferredStyle: UIAlertControllerStyle.Alert)
-                    actionAlert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: { (action: UIAlertAction!) in
-                        UIPasteboard.generalPasteboard().string = self.currentQrString
+                    let actionAlert = UIAlertController(title: "Copy to clipboard?", message: currentQrString, preferredStyle: UIAlertControllerStyle.alert)
+                    actionAlert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (action: UIAlertAction!) in
+                        UIPasteboard.general.string = self.currentQrString
                     }))
-                    actionAlert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: { (action: UIAlertAction!) in
+                    actionAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action: UIAlertAction!) in
                         print("Current qr string is \(self.currentQrString), not copied.")
                     }))
 
-                    presentViewController(actionAlert, animated: true, completion: nil)
+                    present(actionAlert, animated: true, completion: nil)
                 }
                 lastQrString = currentQrString
             }

@@ -137,10 +137,11 @@
 			attributes = {
 				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0700;
-                ORGANIZATIONNAME = windrunner;
+				ORGANIZATIONNAME = windrunner;
 				TargetAttributes = {
 					F4973AAA1A21DD6D00E2F44E = {
 						CreatedOnToolsVersion = 6.1;
+						LastSwiftMigration = 0810;
 					};
 					F4973ABF1A21DD6E00E2F44E = {
 						CreatedOnToolsVersion = 6.1;
@@ -320,6 +321,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = info.windrunner.QRReader;
 				PRODUCT_NAME = QRReader;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -331,6 +333,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = info.windrunner.QRReader;
 				PRODUCT_NAME = QRReader;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
